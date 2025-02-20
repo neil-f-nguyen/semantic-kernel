@@ -1,0 +1,23 @@
+# Ignore Python cache and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+
+# Ignore Terraform files
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Ignore log files
+logs/
+*.log
+
+# Ignore output Terraform files
+terraform_files/*.tf
+
+# Idea
+.idea/
