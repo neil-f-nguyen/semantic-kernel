@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 from semantic_kernel.kernel import Kernel
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from plugins.tf_generator import TFGenerator
@@ -25,12 +26,17 @@ class TerraformAgent:
         self.generator = TFGenerator(self.kernel)
         self.validator = TFValidator()
 
-    def generate_terraform(self, config):
+    async def generate_terraform(self, config):
         """Tạo file Terraform từ config và OpenAI."""
-        terraform_code = self.generator.generate(config)
+        terraform_code = await self.generator.generate(config)
 
+        print("Terraform code is being generated...")
         # Lưu vào file
-        file_path = "terraform_files/main.tf"
+        OUTPUT_DIR = "terraform_files"
+        if not os.path.exists(OUTPUT_DIR):
+            os.makedirs(OUTPUT_DIR)
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        file_path = os.path.join(OUTPUT_DIR, f"main_{timestamp}.tf")
         with open(file_path, "w") as f:
             f.write(terraform_code)
 
