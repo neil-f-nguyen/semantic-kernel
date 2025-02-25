@@ -1,0 +1,56 @@
+import os
+from semantic_kernel.kernel import Kernel
+
+class MicroserviceReviewPlugin:
+    def __init__(self, kernel: Kernel, code_dir: str):
+        self.kernel = kernel
+        self.code_dir = code_dir
+
+    def read_code_files(self):
+        """Đọc toàn bộ mã nguồn trong thư mục chỉ định."""
+        code_snippets = []
+        for root, _, files in os.walk(self.code_dir):
+            for file in files:
+                if file.endswith(('.py', '.js', '.ts', '.go', '.java', '.yaml', '.yml', '.json', 'Dockerfile')):
+                    file_path = os.path.join(root, file)
+                    try:
+                        with open(file_path, 'r', encoding='utf-8') as f:
+                            code_snippets.append(f"### {file} ###\n{f.read()}\n")
+                    except Exception as e:
+                        print(f"⚠️ Không thể đọc file {file_path}: {e}")
+        return "\n".join(code_snippets[:10000])  # Giới hạn dữ liệu gửi lên AI
+
+    async def analyze_architecture(self, code_content: str):
+        """Phân tích mã nguồn để đánh giá kiến trúc microservices."""
+        prompt = f"""
+        You are an expert in Microservices Architecture. Analyze the provided source code based on these key areas:
+
+        ## 🔄 Inter-Service Communication:
+        - Identify communication patterns (REST, gRPC, Message Queue, WebSocket).
+        - Check for possible latency issues.
+
+        ## ⚖️ Load Balancing:
+        - Review API Gateway and Load Balancer settings.
+        - Detect inefficient traffic routing.
+
+        ## 🛠️ Fault Tolerance:
+        - Check retry policies, circuit breakers, and failover mechanisms.
+
+        ## 🔗 Service Dependencies:
+        - Identify risks of cascading failures.
+        - Evaluate service health checks.
+
+        **Source Code for Analysis:**
+        {code_content}
+
+        📌 Provide a structured review with strengths, weaknesses, and improvement suggestions.
+        """
+        response = await self.kernel.invoke_prompt(prompt)
+        return response.text if response else "❌ No response from AI."
+
+    async def review_microservices(self):
+        """Chạy đánh giá microservices bằng cách đọc code và gửi lên AI."""
+        code_content = self.read_code_files()
+        if not code_content:
+            return "❌ No source code found for analysis."
+        return await self.analyze_architecture(code_content)

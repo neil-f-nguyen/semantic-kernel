@@ -6,15 +6,27 @@ class TFGenerator:
         self.kernel = kernel
 
     async def generate(self, config):
-        """Tạo file Terraform bằng LLM."""
+        """Generate Terraform file using LLM."""
         prompt = f"""
-        Generate a Terraform configuration file for {config['provider']}:
-        - Region: {config['region']}
-        - Resource: {config['resource']}
-        - Name: {config['name']}
-        - Additional details: {config}
-        """
+        Generate only the content of a complete Terraform configuration file for {config["provider"]}.
 
-        # Gọi Azure OpenAI để sinh Terraform code
+        ## Requirements:
+        - **Cloud Provider**: {config["provider"]}
+        - **Region**: {config["region"]}
+        - **Resource Type**: {config["resource"]}
+        - **Resource Name**: {config["name"]}
+        - **Additional Details**: {config}
+
+        ## Expected Output:
+        This Terraform script should:
+        - Define all necessary **resource blocks** for services such as VPC, Subnets, EC2 Instances, Security Groups, Load Balancers, and any other requested components.
+        - Ensure correct **syntax** and follow **best practices** for cloud resource provisioning.
+        - Include **variables and outputs** where applicable to promote reusability and modularity.
+        - Apply **least privilege principles** when defining IAM roles and security group rules.
+        - Optimize **network configurations** for scalability and high availability.
+
+        🚀 Please return only the Terraform script content without additional explanations or metadata.
+        """
+        # Call Azure OpenAI to generate Terraform code
         response = await self.kernel.invoke_prompt(prompt)
         return str(response)
