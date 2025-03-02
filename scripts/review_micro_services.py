@@ -1,5 +1,6 @@
 # from agents.microservice_agent import MicroservicesAgent
 # import asyncio
+from agents.microservice_agent import MicroserviceAgent
 
 
 # async def main():
@@ -19,16 +20,30 @@
 # if __name__ == "__main__":
 #     asyncio.run(main())
 
-
-from agents.microservice_agent import MicroservicesAgent
-import asyncio
+#
+# from agents.microservice_agent import MicroservicesAgent
+# import asyncio
+#
+#
+# async def main():
+#     agent = MicroservicesAgent(code_dir="C:\\Users\\Tu.d.nguyen\\Downloads\\complete-microservice-application-master")
+#
+#     await agent.execute()
+#
+#
+# if __name__ == "__main__":
+#     asyncio.run(main())
 
 
 async def main():
-    agent = MicroservicesAgent(code_dir="C:\\Users\\Tu.d.nguyen\\Downloads\\complete-microservice-application-master")
+    agent = MicroserviceAgent(root_dir="./your_microservices_project")
 
-    await agent.execute()
+    results = await agent.execute()
 
+    print("📋 Microservices Architecture Review Report:")
+    for service, report in results.items():
+        print(f"\n🔹 {service}:\n{report}\n")
 
+import asyncio
 if __name__ == "__main__":
     asyncio.run(main())

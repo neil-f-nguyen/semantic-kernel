@@ -2,7 +2,7 @@
 
 
 # class MicroservicesReview:
-#     def __init__(self, kernel: Kernel):
+#     def __init__.py(self, kernel: Kernel):
 #         self.kernel = kernel
 
 #     async def review(self, architecture_desc: str) -> str:

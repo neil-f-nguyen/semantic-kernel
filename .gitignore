@@ -16,8 +16,8 @@ terraform.tfstate.backup
 logs/
 *.log
 
-# Ignore output Terraform files
-terraform_files/*.tf
+# Ignore output
+output/
 
 # Idea
 .idea/
