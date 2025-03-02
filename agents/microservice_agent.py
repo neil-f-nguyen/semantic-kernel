@@ -117,7 +117,10 @@ class MicroserviceAgent:
         services = self.extractor.find_microservices()
         if not services:
             return "❌ No microservices found."
-        return await self.review_plugin.review_all_services(services)
+        results = {}
+        for service_name, service_path in services.items():
+            results[service_name] = await self.review_plugin.review_service(service_name, service_path)
+        return results
 
 
 async def main():
@@ -129,6 +132,8 @@ async def main():
     for service, report in results.items():
         print(f"\n🔹 {service}:\n{report}\n")
 
+
 import asyncio
+
 if __name__ == "__main__":
     asyncio.run(main())
